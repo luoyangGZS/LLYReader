@@ -1,0 +1,88 @@
+plugins {
+    id 'com.android.application'
+}
+
+//声明 获取签名配置 配置文件路径
+def signProperties = rootProject.file("sign/keystore.properties")
+def props = new Properties()
+props.load(new FileInputStream(signProperties))
+def file = file(props['storeFile'])
+
+android {
+
+    signingConfigs {
+        release {
+            //如果秘钥库文件和配置文件存在就签名，否则不签名
+            if (file.exists() && signProperties.exists()) {
+                keyAlias props['keyAlias']
+                keyPassword props['keyPassword']
+                storeFile file
+                storePassword props['storePassword']
+            }
+        }
+    }
+
+
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.luoyang.llyreader"
+        minSdk 26
+        targetSdk 32
+        versionCode 1
+        versionName "2.0.1"
+        flavorDimensions "versionCode"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //使用签名文件
+            signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    productFlavors {
+        //本地开发环境
+        dev {
+            buildConfigField 'String', 'ENVIRONMENT', '"develop"'
+            buildConfigField 'String', 'BASE_IP', '"https://www.baidu.com"'
+        }
+
+        //生产环境
+        pro {
+            buildConfigField 'String', 'ENVIRONMENT', '"product"'
+            buildConfigField 'String', 'BASE_IP', '"https://www.baidu.com"'
+        }
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith(".apk")) {
+                if (variant.buildType.name == "release") {
+                    outputFileName = "llyReader_v" + defaultConfig.versionName + ".apk"
+                } else {
+                    outputFileName = "llyReader_v" + defaultConfig.versionName + "_" + variant.buildType.name + ".apk"
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation project(path: ':basemvp')
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
