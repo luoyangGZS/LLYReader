@@ -1,6 +1,9 @@
 package com.luoyang.basemvp.impl;
 
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +40,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
         mPresenter = initInjector();
         attachView();
         initData();
-        bindView();
+        bindView(mView);
         bindEvent();
         firstRequest();
         mLifecycleRegistry.addObserver(new BaseLifecycleObserver());
@@ -62,7 +65,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     /**
      * 控件绑定
      */
-    protected void bindView() {
+    protected void bindView(View view) {
 
     }
 
@@ -102,7 +105,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     /**
      * 布局载入  onCreateView()
      *
-     * @param inflater 充气者
+     * @param inflater  充气者
      * @param container 容器
      * @return view
      */
@@ -131,4 +134,18 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     public Lifecycle getLifecycle() {
         return mLifecycleRegistry;
     }
+
+    protected void startActivityByAnim(Intent intent, int animIn, int animExit) {
+        startActivity(intent);
+        getActivity().overridePendingTransition(animIn, animExit);
+    }
+
+    protected void startActivityByAnim(Intent intent, View view, String transitionName, int animIn, int animExit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, transitionName).toBundle());
+        } else {
+            startActivityByAnim(intent, animIn, animExit);
+        }
+    }
+
 }

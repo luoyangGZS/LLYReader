@@ -1,5 +1,7 @@
 package com.luoyang.llyreader.base;
 
+import android.view.View;
+
 import com.luoyang.basemvp.IPresenter;
 import com.luoyang.basemvp.impl.BaseFragment;
 import com.luoyang.basemvp.utils.LogUtils;

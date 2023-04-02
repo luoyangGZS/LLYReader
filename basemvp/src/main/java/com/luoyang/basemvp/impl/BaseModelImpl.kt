@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
  * @author luoyang
  * @date 2022/10/28
  */
-object BaseModelImpl {
+open class BaseModelImpl {
 
     private val okHttpBuilder: OkHttpClient.Builder =
         OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)

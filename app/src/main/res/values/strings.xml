@@ -3,4 +3,8 @@
     <string name="text_home">书架</string>
     <string name="text_community">找书</string>
     <string name="text_user">个人</string>
+
+    <string name="tv_read_durprogress">观看至:%s</string>
+    <string name="tv_book_name">《%s》</string>
+    <string name="tv_importbook_count">共%s个Text文件</string>
 </resources>
